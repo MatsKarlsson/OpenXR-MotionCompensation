@@ -50,19 +50,19 @@ namespace utility
         void SetTolerance(const XrTime tolerance)
         {
             using namespace openxr_api_layer::log;
-            TraceLocalActivity(local);
-            TraceLoggingWriteStart(local, "Cache::SetTolerance", TLArg(tolerance, "Tolerance"));
+            //TraceLocalActivity(local);
+            //TraceLoggingWriteStart(local, "Cache::SetTolerance", TLArg(tolerance, "Tolerance"));
 
             m_Tolerance = tolerance;
 
-            TraceLoggingWriteStop(local, "Cache::SetTolerance");
+            //TraceLoggingWriteStop(local, "Cache::SetTolerance");
         }
 
         void AddSample(XrTime time, Sample sample, const bool override)
         {
             using namespace openxr_api_layer::log;
-            TraceLocalActivity(local);
-            TraceLoggingWriteStart(local, "Cache::AddSample", TLArg(m_SampleType.c_str(), "Type"), TLArg(time, "Time"));
+            //TraceLocalActivity(local);
+            //TraceLoggingWriteStart(local, "Cache::AddSample", TLArg(m_SampleType.c_str(), "Type"), TLArg(time, "Time"));
 
             std::unique_lock lock(m_CacheLock);
             if (m_Cache.contains(time))
@@ -70,25 +70,25 @@ namespace utility
                 if (!override)
                 {
                     DebugLog("AddSample(%s) at %u: omitted", m_SampleType.c_str(), time);
-                    TraceLoggingWriteStop(local, "Cache::AddSample", TLArg(true, "Omitted"));
+                    //TraceLoggingWriteStop(local, "Cache::AddSample", TLArg(true, "Omitted"));
                     return;
                 }
                 DebugLog("AddSample(%s) at %u: overriden", m_SampleType.c_str(), time);
-                TraceLoggingWriteTagged(local, "Cache::AddSample", TLArg(true, "Override"));
+                //TraceLoggingWriteTagged(local, "Cache::AddSample", TLArg(true, "Override"));
             }
             else
             {
                 DebugLog("AddSample(%s) at %u: inserted", m_SampleType.c_str(), time); 
             }
             m_Cache[time] = sample;
-            TraceLoggingWriteStop(local, "Cache::AddSample");
+            //TraceLoggingWriteStop(local, "Cache::AddSample");
         }
 
         Sample GetSample(XrTime time) const
         {
             using namespace openxr_api_layer::log;
-            TraceLocalActivity(local);
-            TraceLoggingWriteStart(local, "Cache::GetSample", TLArg(m_SampleType.c_str(), "Type"), TLArg(time, "Time"));
+            //TraceLocalActivity(local);
+            //TraceLoggingWriteStart(local, "Cache::GetSample", TLArg(m_SampleType.c_str(), "Type"), TLArg(time, "Time"));
 
             std::unique_lock lock(m_CacheLock);
 
@@ -99,11 +99,11 @@ namespace utility
                 if (it->first == time)
                 {
                     // exact entry found
-                    TraceLoggingWriteStop(local,
-                                          "Cache::GetSample",
-                                          TLArg(m_SampleType.c_str(), "Type"),
-                                          TLArg("Exact", "Match"),
-                                          TLArg(it->first, "Time"));
+                    //TraceLoggingWriteStop(local,
+                                          //"Cache::GetSample",
+                                          //TLArg(m_SampleType.c_str(), "Type"),
+                                          //TLArg("Exact", "Match"),
+                                          //TLArg(it->first, "Time"));
 
                     DebugLog("GetSample(%s) at %u: exact match found", m_SampleType.c_str(), time);
 
@@ -112,11 +112,11 @@ namespace utility
                 else if (it->first <= time + m_Tolerance)
                 {
                     // succeeding entry is within tolerance
-                    TraceLoggingWriteStop(local,
-                                          "Cache::GetSample",
-                                          TLArg(m_SampleType.c_str(), "Type"),
-                                          TLArg("Later", "Match"),
-                                          TLArg(it->first, "Time"));
+                    //TraceLoggingWriteStop(local,
+                                          //"Cache::GetSample",
+                                          //TLArg(m_SampleType.c_str(), "Type"),
+                                          //TLArg("Later", "Match"),
+                                          //TLArg(it->first, "Time"));
                     DebugLog("GetSample(%s) at %u: later match found: %u", m_SampleType.c_str(), time, it->first);
 
                     return it->second;
@@ -130,11 +130,11 @@ namespace utility
                 if (lowerIt->first >= time - m_Tolerance)
                 {
                     // preceding entry is within tolerance
-                    TraceLoggingWriteStop(local,
-                                          "Cache::GetSample",
-                                          TLArg(m_SampleType.c_str(), "Type"),
-                                          TLArg("Earlier", "Match"),
-                                          TLArg(lowerIt->first, "Time"));
+                    //TraceLoggingWriteStop(local,
+                                          //"Cache::GetSample",
+                                          //TLArg(m_SampleType.c_str(), "Type"),
+                                          //TLArg("Earlier", "Match"),
+                                          //TLArg(lowerIt->first, "Time"));
                     DebugLog("GetSample(%s) at %u: earlier match found: %u", m_SampleType.c_str(), time, lowerIt->first);
 
                     return lowerIt->second;
@@ -152,22 +152,22 @@ namespace utility
                     --lowerIt;
                     // both entries are valid -> select better match
                     auto returnIt = (time - lowerIt->first < it->first - time ? lowerIt : it);
-                    TraceLoggingWriteStop(local,
-                                          "Cache::GetSample",
-                                          TLArg(m_SampleType.c_str(), "Type"),
-                                          TLArg("Estimated Both", "Match"),
-                                          TLArg(it->first, "Time"));
+                    //TraceLoggingWriteStop(local,
+                                          //"Cache::GetSample",
+                                          //TLArg(m_SampleType.c_str(), "Type"),
+                                          //TLArg("Estimated Both", "Match"),
+                                          //TLArg(it->first, "Time"));
                     ErrorLog("GetSample(%s) at %u: using best match: %u ", m_SampleType.c_str(), time, returnIt->first);
 
                     return returnIt->second;
                 }
                 // higher entry is first in cache -> use it
 
-                TraceLoggingWriteStop(local,
-                                      "Cache::GetSample",
-                                      TLArg(m_SampleType.c_str(), "Type"),
-                                      TLArg("Estimated Later", "Match"),
-                                      TLArg(it->first, "Time"));
+                //TraceLoggingWriteStop(local,
+                                      //"Cache::GetSample",
+                                      //TLArg(m_SampleType.c_str(), "Type"),
+                                      //TLArg("Estimated Later", "Match"),
+                                      //TLArg(it->first, "Time"));
                 ErrorLog("GetSample(%s) at %u: using best match: t = %u ", m_SampleType.c_str(), time, it->first);
                 return it->second;
             }
@@ -177,19 +177,19 @@ namespace utility
                 --lowerIt;
                 // lower entry is last in cache-> use it
                 ErrorLog("GetSample(%s) at %u: using best match: t = %u ", m_SampleType.c_str(), time, lowerIt->first);
-                TraceLoggingWriteStop(local,
-                                      "Cache::GetSample",
-                                      TLArg(m_SampleType.c_str(), "Type"),
-                                      TLArg("Estimated Earlier", "Match"),
-                                      TLArg(lowerIt->first, "Time"));
+                //TraceLoggingWriteStop(local,
+                                      //"Cache::GetSample",
+                                      //TLArg(m_SampleType.c_str(), "Type"),
+                                      //TLArg("Estimated Earlier", "Match"),
+                                      //TLArg(lowerIt->first, "Time"));
                 return lowerIt->second;
             }
             // cache is empty -> return fallback
             ErrorLog("GetSample(%s) at %u: using fallback!!!", m_SampleType.c_str(), time);
-            TraceLoggingWriteStop(local,
-                                  "Cache::GetSample",
-                                  TLArg(m_SampleType.c_str(), "Type"),
-                                  TLArg("Fallback", "Match"));
+            //TraceLoggingWriteStop(local,
+                                  //"Cache::GetSample",
+                                  //TLArg(m_SampleType.c_str(), "Type"),
+                                  //TLArg("Fallback", "Match"));
             return m_Fallback;
         }
 
@@ -197,8 +197,8 @@ namespace utility
         void CleanUp(const XrTime time)
         {
             using namespace openxr_api_layer::log;
-            TraceLocalActivity(local);
-            TraceLoggingWriteStart(local, "Cache::CleanUp", TLArg(m_SampleType.c_str(), "Type"), TLArg(time, "Time"));
+            //TraceLocalActivity(local);
+            //TraceLoggingWriteStart(local, "Cache::CleanUp", TLArg(m_SampleType.c_str(), "Type"), TLArg(time, "Time"));
 
             std::unique_lock lock(m_CacheLock);
 
@@ -208,12 +208,12 @@ namespace utility
                 --it;
                 if (m_Cache.end() != it && m_Cache.begin() != it)
                 {
-                    TraceLoggingWriteTagged(local, "Cache::CleanUp", TLArg(it->first, "Eraaed"));
+                    //TraceLoggingWriteTagged(local, "Cache::CleanUp", TLArg(it->first, "Eraaed"));
                     m_Cache.erase(m_Cache.begin(), it);
                 }
             }
 
-            TraceLoggingWriteStop(local, "Cache::CleanUp");
+            //TraceLoggingWriteStop(local, "Cache::CleanUp");
         }
 
       private:

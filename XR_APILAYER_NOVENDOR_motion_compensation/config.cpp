@@ -13,8 +13,8 @@ using namespace utility;
 
 bool ConfigManager::Init(const std::string& application)
 {
-    TraceLocalActivity(local);
-    TraceLoggingWriteStart(local, "ConfigManager::Init", TLArg(application.c_str(), "Application"));
+    //TraceLocalActivity(local);
+    //TraceLoggingWriteStart(local, "ConfigManager::Init", TLArg(application.c_str(), "Application"));
 
     // create application config file if not existing
     const auto& enabledKey = m_Keys.find(Cfg::Enabled);
@@ -54,7 +54,7 @@ bool ConfigManager::Init(const std::string& application)
         {
             m_Values[Cfg::Enabled] = buffer;
             Log("motion compensation disabled globally");
-            TraceLoggingWriteStop(local, "ConfigManager::Init", TLArg("Success", "Exit"));
+            //TraceLoggingWriteStop(local, "ConfigManager::Init", TLArg("Success", "Exit"));
             return true;
         }
 
@@ -68,23 +68,23 @@ bool ConfigManager::Init(const std::string& application)
             if (0 <
                 GetPrivateProfileString(section.c_str(), key.c_str(), nullptr, buffer, 2047, m_ApplicationIni.c_str()))
             {
-                TraceLoggingWriteTagged(local,
-                                        "ConfigManager::Init",
-                                        TLArg(section.c_str(), "Section"),
-                                        TLArg(key.c_str(), "Key"),
-                                        TLArg(buffer, "Value"),
-                                        TLArg(application.c_str(), "Config"));
+                //TraceLoggingWriteTagged(local,
+                                        //"ConfigManager::Init",
+                                        //TLArg(section.c_str(), "Section"),
+                                        //TLArg(key.c_str(), "Key"),
+                                        //TLArg(buffer, "Value"),
+                                        //TLArg(application.c_str(), "Config"));
                 m_Values[entry.first] = buffer;
             }
             else if ((0 <
                       GetPrivateProfileString(section.c_str(), key.c_str(), nullptr, buffer, 2047, coreIni.c_str())))
             {
-                TraceLoggingWriteTagged(local,
-                                        "ConfigManager::Init",
-                                        TLArg(section.c_str(), "Section"),
-                                        TLArg(key.c_str(), "Key"),
-                                        TLArg(buffer, "Value"),
-                                        TLArg("Default", "Config"));
+                //TraceLoggingWriteTagged(local,
+                                        //"ConfigManager::Init",
+                                        //TLArg(section.c_str(), "Section"),
+                                        //TLArg(key.c_str(), "Key"),
+                                        //TLArg(buffer, "Value"),
+                                        //TLArg("Default", "Config"));
                 m_Values[entry.first] = buffer;
             }
             else
@@ -96,18 +96,18 @@ bool ConfigManager::Init(const std::string& application)
         if (!errors.empty())
         {
             ErrorLog("%s: unable to read configuration: %s", __FUNCTION__, errors.c_str());
-            TraceLoggingWriteStop(local, "ConfigManager::Init", TLArg("Failure", "Exit"));
+            //TraceLoggingWriteStop(local, "ConfigManager::Init", TLArg("Failure", "Exit"));
             return false;
         }
     }
     else
     {
         ErrorLog("%s: unable to find config file %s", __FUNCTION__, coreIni.c_str());
-        TraceLoggingWriteStop(local, "ConfigManager::Init", TLArg("Failure", "Exit"));
+        //TraceLoggingWriteStop(local, "ConfigManager::Init", TLArg("Failure", "Exit"));
         return false;
     }
 
-    TraceLoggingWriteStop(local, "ConfigManager::Init", TLArg("Success", "Exit"));
+    //TraceLoggingWriteStop(local, "ConfigManager::Init", TLArg("Success", "Exit"));
     return true;
 }
 
@@ -291,8 +291,8 @@ void ConfigManager::SetValue(const Cfg key, const std::string& val)
 
 void ConfigManager::WriteConfig(const bool forApp)
 {
-    TraceLocalActivity(local);
-    TraceLoggingWriteStart(local, "ConfigManager::WriteConfig", TLArg(forApp, "AppSpecific"));
+    //TraceLocalActivity(local);
+    //TraceLoggingWriteStart(local, "ConfigManager::WriteConfig", TLArg(forApp, "AppSpecific"));
 
     bool error{false};
     const std::string configFile =
@@ -323,11 +323,11 @@ void ConfigManager::WriteConfig(const bool forApp)
                 }
                 else
                 {
-                    TraceLoggingWriteTagged(local,
-                                            "ConfigManager::WriteConfig",
-                                            TLArg(section.c_str(), "Section"),
-                                            TLArg(keyName.c_str(), "Key"),
-                                            TLArg(valueEntry->second.c_str(), "Value"));
+                    //TraceLoggingWriteTagged(local,
+                                            //"ConfigManager::WriteConfig",
+                                            //TLArg(section.c_str(), "Section"),
+                                            //TLArg(keyName.c_str(), "Key"),
+                                            //TLArg(valueEntry->second.c_str(), "Value"));
                 }
             }
             else
@@ -345,7 +345,7 @@ void ConfigManager::WriteConfig(const bool forApp)
     Log("current configuration %saved to %s", error ? "could not be " : "", configFile.c_str());
     output::AudioOut::Execute(!error ? output::Event::Save : output::Event::Error);
 
-    TraceLoggingWriteStop(local, "ConfigManager::WriteConfig", TLArg(!error, "Success"));
+    //TraceLoggingWriteStop(local, "ConfigManager::WriteConfig", TLArg(!error, "Success"));
 }
 
 std::unique_ptr<ConfigManager> g_config = nullptr;

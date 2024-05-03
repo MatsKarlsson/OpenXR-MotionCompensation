@@ -19,8 +19,8 @@ namespace utility
 {
     XrVector3f ToEulerAngles(XrQuaternionf q)
     {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "ModifierBase::ToEulerAngles", TLArg(xr::ToString(q).c_str(), "Quaternion"));
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "ModifierBase::ToEulerAngles", TLArg(xr::ToString(q).c_str(), "Quaternion"));
 
         XrVector3f angles;
 
@@ -39,7 +39,7 @@ namespace utility
         const double cosRCosP = 1 - 2.0 * (q.z * q.z + q.x * q.x);
         angles.z = static_cast<float>(std::atan2(sinRCosP, cosRCosP));
 
-        TraceLoggingWriteStop(local, "ModifierBase::ToEulerAngles", TLArg(xr::ToString(angles).c_str(), "Angles"));
+        //TraceLoggingWriteStop(local, "ModifierBase::ToEulerAngles", TLArg(xr::ToString(angles).c_str(), "Angles"));
 
         return angles;
     }
@@ -60,16 +60,14 @@ namespace utility
     {
         if (m_Activate)
         {
-            TraceLocalActivity(local);
-            TraceLoggingWriteStart(local, "AutoActivator::ActivateIfNecessary", TLArg(time, "Time"));
+            //TraceLocalActivity(local);
+            //TraceLoggingWriteStart(local, "AutoActivator::ActivateIfNecessary", TLArg(time, "Time"));
 
             if (m_SecondsLeft <= 0)
             {
                 m_Input->ToggleActive(time);
                 m_Activate = false;
-                TraceLoggingWriteStop(local,
-                                      "AutoActivator::ActivateIfNecessary",
-                                      TLArg(m_SecondsLeft, "No_Seconds_Left"));
+                //TraceLoggingWriteStop(local, "AutoActivator::ActivateIfNecessary", TLArg(m_SecondsLeft, "No_Seconds_Left"));
                 return;
             }
             if (0 == m_ActivationTime)
@@ -84,7 +82,7 @@ namespace utility
             }
             m_SecondsLeft = currentlyLeft;
 
-            TraceLoggingWriteStop(local, "AutoActivator::ActivateIfNecessary", TLArg(m_SecondsLeft, "Seconds_Left"));
+            //TraceLoggingWriteStop(local, "AutoActivator::ActivateIfNecessary", TLArg(m_SecondsLeft, "Seconds_Left"));
         }
     }
 
@@ -116,8 +114,8 @@ namespace utility
 
     bool Mmf::Open(const int64_t time)
     {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "Mmf::Open", TLArg(time, "Time"));
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Mmf::Open", TLArg(time, "Time"));
 
         std::unique_lock lock(m_MmfLock);
         m_FileHandle = OpenFileMapping(FILE_MAP_READ, FALSE, m_Name.c_str());
@@ -135,7 +133,7 @@ namespace utility
                 ErrorLog("%s: unable to map view to mmf '%s': %s",__FUNCTION__, m_Name.c_str(), LastErrorMsg().c_str());
                 lock.unlock();
                 Close();
-                TraceLoggingWriteStop(local, "Mmf::Open", TLArg(false, "Success"));
+                //TraceLoggingWriteStop(local, "Mmf::Open", TLArg(false, "Success"));
                 return false;
             }
         }
@@ -146,17 +144,17 @@ namespace utility
                 ErrorLog("%s: could not open mmf '%s': %s", __FUNCTION__,  m_Name.c_str(), LastErrorMsg().c_str());
                 m_ConnectionLost = true;
             }
-            TraceLoggingWriteStop(local, "Mmf::Open", TLArg(false, "Success"));
+            //TraceLoggingWriteStop(local, "Mmf::Open", TLArg(false, "Success"));
             return false;
         }
-        TraceLoggingWriteStop(local, "Mmf::Open", TLArg(true, "Success"));
+        //TraceLoggingWriteStop(local, "Mmf::Open", TLArg(true, "Success"));
         return true;
     }
 
     bool Mmf::Read(void* buffer, const size_t size, const int64_t time)
     {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "Mmf::Read", TLArg(time, "Time"));
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Mmf::Read", TLArg(time, "Time"));
 
         if (m_Check > 0 && time - m_LastRefresh > m_Check)
         {
@@ -178,20 +176,20 @@ namespace utility
                 ErrorLog("%s: unable to read from mmf %s: %s", __FUNCTION__, m_Name.c_str(), e.what());
                 // reset mmf connection
                 Close();
-                TraceLoggingWriteStop(local, "Mmf::Read", TLArg(false, "Memcpy"));
+                //TraceLoggingWriteStop(local, "Mmf::Read", TLArg(false, "Memcpy"));
                 return false;
             }
-            TraceLoggingWriteStop(local, "Mmf::Read", TLArg(true, "Success"));
+            //TraceLoggingWriteStop(local, "Mmf::Read", TLArg(true, "Success"));
             return true;
         }
-        TraceLoggingWriteStop(local, "Mmf::Read", TLArg(false, "View"));
+        //TraceLoggingWriteStop(local, "Mmf::Read", TLArg(false, "View"));
         return false;
     }
 
     void Mmf::Close()
     {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "Mmf::Close");
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Mmf::Close");
 
         std::unique_lock lock(m_MmfLock);
         if (m_View)
@@ -205,7 +203,7 @@ namespace utility
         }
         m_FileHandle = nullptr;
 
-        TraceLoggingWriteStop(local, "Mmf::Close");
+        //TraceLoggingWriteStop(local, "Mmf::Close");
     }
 
     std::string LastErrorMsg()

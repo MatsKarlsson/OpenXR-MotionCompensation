@@ -7,7 +7,7 @@
     "implementation_version": "1",
     "description": "Open XR Motion Compensation Layer (32-bit)",
     "functions": {
-      "xrNegotiateLoaderApiLayerInterface": "xrNegotiateLoaderApiLayerInterface"
+      "xrNegotiateLoaderApiLayerInterface": "_xrNegotiateLoaderApiLayerInterface@12"
     },
     "disable_environment": "DISABLE_XR_APILAYER_NOVENDOR_motion_compensation"
   }

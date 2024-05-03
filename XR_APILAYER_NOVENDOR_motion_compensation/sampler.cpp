@@ -30,43 +30,43 @@ namespace sampler
 
     void Sampler::SetStrength(const float strength) const
     {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "Sampler::SetStrength", TLArg(strength, "Strength"));
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Sampler::SetStrength", TLArg(strength, "Strength"));
 
         m_Stabilizer->SetStrength(strength);
 
-        TraceLoggingWriteStop(local, "Sampler::SetStrength", TLArg(strength, "Strength"));
+        //TraceLoggingWriteStop(local, "Sampler::SetStrength", TLArg(strength, "Strength"));
     }
 
     bool Sampler::ReadData(Dof& dof, XrTime now)
     {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "Sampler::ReadData", TLArg(now, "Now"));
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Sampler::ReadData", TLArg(now, "Now"));
 
         if (!m_IsSampling.load())
         {
             // try to reconnect
             if (m_Tracker->GetSource()->Open(0))
             {
-                TraceLoggingWriteTagged(local, "Sampler::ReadData", TLArg(true, "Restart"));
+                //TraceLoggingWriteTagged(local, "Sampler::ReadData", TLArg(true, "Restart"));
                 StartSampling();
             }
             else
             {
-                TraceLoggingWriteStop(local, "Sampler::ReadData", TLArg(false, "Success"));
+                //TraceLoggingWriteStop(local, "Sampler::ReadData", TLArg(false, "Success"));
                 return false;
             }
         }
         m_Stabilizer->Read(dof);
 
-        TraceLoggingWriteStop(local, "Sampler::ReadData", TLArg(true, "Success"));
+        //TraceLoggingWriteStop(local, "Sampler::ReadData", TLArg(true, "Success"));
         return true;
     }
 
     void Sampler::StartSampling()
     {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "Sampler::StartSampling");
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Sampler::StartSampling");
 
         if (m_IsSampling.load())
         {
@@ -79,13 +79,13 @@ namespace sampler
         m_IsSampling = true;
         m_Thread = new std::thread(&Sampler::DoSampling, this);
 
-        TraceLoggingWriteStop(local, "Sampler::StartSampling");
+        //TraceLoggingWriteStop(local, "Sampler::StartSampling");
     }
 
     void Sampler::StopSampling()
     {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "Sampler::StopSampling");
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Sampler::StopSampling");
 
         m_IsSampling = false;
         if (m_Thread)
@@ -96,7 +96,7 @@ namespace sampler
             }
             delete m_Thread;
             m_Thread = nullptr;
-            TraceLoggingWriteTagged(local, "Sampler::StopSampling", TLArg(true, "Stopped"));
+            //TraceLoggingWriteTagged(local, "Sampler::StopSampling", TLArg(true, "Stopped"));
         }
         if (m_SampleRecording && m_Recorder)
         {
@@ -105,7 +105,7 @@ namespace sampler
             m_Recorder->AddDofValues(zero, Momentary);      
         }
 
-        TraceLoggingWriteStop(local, "Sampler::StopSampling");
+        //TraceLoggingWriteStop(local, "Sampler::StopSampling");
     }
 
     void Sampler::DoSampling()

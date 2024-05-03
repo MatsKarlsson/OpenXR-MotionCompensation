@@ -37,8 +37,9 @@ namespace openxr_api_layer::graphics
 {
     void Overlay::DestroySession(XrSession session)
     {
-        TraceLocalActivity(local);
-        //TraceLoggingWriteStart(local, "Overlay::DestroySession", TLPArg(session, "Session"));
+        //TraceLocalActivity(local);
+        ////TraceLoggingWriteStart(local, "Overlay::DestroySession", TLPArg(session, "Session"));
+        //TraceLoggingWriteStart(local, "Overlay::DestroySession", TLXArg(session, "Session"));
 
         std::unique_lock lock(m_DrawMutex);
         m_Textures.clear();
@@ -47,25 +48,26 @@ namespace openxr_api_layer::graphics
         m_MeshCMY.reset();
         m_InitializedSessions.erase(session);
 
-        TraceLoggingWriteStop(local, "Overlay::DestroySession");
+        //TraceLoggingWriteStop(local, "Overlay::DestroySession");
     }
     void Overlay::CreateSwapchain(XrSwapchain swapchain, const XrSwapchainCreateInfo* createInfo)
     {
-        TraceLocalActivity(local);
-        //TraceLoggingWriteStart(local,
+        //TraceLocalActivity(local);
+        ////TraceLoggingWriteStart(local,
         //                       "Overlay::CreateSwapchain",
         //                       TLPArg(swapchain, "Swapchain"),
         //                       TLArg(m_D3D12inUse, "D3D12inUse"));
+        //TraceLoggingWriteStart(local, "Overlay::CreateSwapchain", TLXArg(swapchain, "Swapchain"));
 
         uint32_t imageCount;
         if (const XrResult result = GetInstance()->xrEnumerateSwapchainImages(swapchain, 0, &imageCount, nullptr); XR_FAILED(result))
         {
-            TraceLoggingWriteStop(local, "Overlay::CreateSwapchain", TLArg(xr::ToCString(result),"EnumerateImages_Count"));
+            //TraceLoggingWriteStop(local, "Overlay::CreateSwapchain", TLArg(xr::ToCString(result),"EnumerateImages_Count"));
             return;
         }
         if (imageCount == 0)
         {
-            TraceLoggingWriteStop(local, "Overlay::CreateSwapchain", TLArg(imageCount, "Image_Count"));
+            //TraceLoggingWriteStop(local, "Overlay::CreateSwapchain", TLArg(imageCount, "Image_Count"));
             return;
         }
 
@@ -78,9 +80,7 @@ namespace openxr_api_layer::graphics
                     &imageCount,
                     reinterpret_cast<XrSwapchainImageBaseHeader*>(d3dImages.data())))
             {
-                TraceLoggingWriteStop(local,
-                                      "Overlay::CreateSwapchain",
-                                      TLArg(xr::ToCString(result), "EnumerateImages_Images"));
+                //TraceLoggingWriteStop(local, "Overlay::CreateSwapchain", TLArg(xr::ToCString(result), "EnumerateImages_Images"));
                 return;
             }
 
@@ -90,7 +90,7 @@ namespace openxr_api_layer::graphics
                          __FUNCTION__,
                          d3dImages[0].type,
                          XR_TYPE_SWAPCHAIN_IMAGE_D3D11_KHR);
-                TraceLoggingWriteStop(local, "Overlay::CreateSwapchain", TLArg(false, "ImageType_Match"));
+                //TraceLoggingWriteStop(local, "Overlay::CreateSwapchain", TLArg(false, "ImageType_Match"));
                 return;
 
             }
@@ -98,27 +98,27 @@ namespace openxr_api_layer::graphics
             {
                 D3D11_TEXTURE2D_DESC desc;
                 d3dImages[0].texture->GetDesc(&desc);
-                TraceLoggingWriteTagged(local,
-                                  "Overlay::CreateSwapchain",
-                                  TLArg(desc.Width, "Width"),
-                                  TLArg(desc.Height, "Height"),
-                                  TLArg(desc.ArraySize, "ArraySize"),
-                                  TLArg(desc.MipLevels, "MipCount"),
-                                  TLArg(desc.SampleDesc.Count, "SampleCount"),
-                                  TLArg((int)desc.Format, "Format"),
-                                  TLArg((int)desc.Usage, "Usage"),
-                                  TLArg(desc.BindFlags, "BindFlags"),
-                                  TLArg(desc.CPUAccessFlags, "CPUAccessFlags"),
-                                  TLArg(desc.MiscFlags, "MiscFlags"));
+                //TraceLoggingWriteTagged(local,
+                                  //"Overlay::CreateSwapchain",
+                                  //TLArg(desc.Width, "Width"),
+                                  //TLArg(desc.Height, "Height"),
+                                  //TLArg(desc.ArraySize, "ArraySize"),
+                                  //TLArg(desc.MipLevels, "MipCount"),
+                                  //TLArg(desc.SampleDesc.Count, "SampleCount"),
+                                  //TLArg((int)desc.Format, "Format"),
+                                  //TLArg((int)desc.Usage, "Usage"),
+                                  //TLArg(desc.BindFlags, "BindFlags"),
+                                  //TLArg(desc.CPUAccessFlags, "CPUAccessFlags"),
+                                  //TLArg(desc.MiscFlags, "MiscFlags"));
             }
 
             std::vector<ID3D11Texture2D*> textures{};
             for (uint32_t i = 0; i < imageCount; i++)
             {
-                TraceLoggingWriteTagged(local,
-                                        "Overlay::CreateSwapchain",
-                                        TLArg(i, "Index"),
-                                        TLPArg(d3dImages[i].texture, "Texture"));
+                //TraceLoggingWriteTagged(local,
+                                        //"Overlay::CreateSwapchain",
+                                        //TLArg(i, "Index"),
+                                        //TLPArg(d3dImages[i].texture, "Texture"));
                 textures.push_back(d3dImages[i].texture);
             }
             m_Swapchains[swapchain] = {swapchain,
@@ -140,9 +140,7 @@ namespace openxr_api_layer::graphics
                     &imageCount,
                     reinterpret_cast<XrSwapchainImageBaseHeader*>(d3dImages.data())))
             {
-                TraceLoggingWriteStop(local,
-                                      "Overlay::CreateSwapchain",
-                                      TLArg(xr::ToCString(result), "EnumerateImages_Images"));
+                //TraceLoggingWriteStop(local, "Overlay::CreateSwapchain", TLArg(xr::ToCString(result), "EnumerateImages_Images"));
                 return;
             }
 
@@ -152,7 +150,7 @@ namespace openxr_api_layer::graphics
                          __FUNCTION__,
                          d3dImages[0].type,
                          XR_TYPE_SWAPCHAIN_IMAGE_D3D12_KHR);
-                TraceLoggingWriteStop(local, "Overlay::CreateSwapchain", TLArg(false, "ImageType_Match"));
+                //TraceLoggingWriteStop(local, "Overlay::CreateSwapchain", TLArg(false, "ImageType_Match"));
                 return;
             }
             // Dump the descriptor for the first texture returned by the runtime for debug purposes.
@@ -172,10 +170,7 @@ namespace openxr_api_layer::graphics
             std::vector<ID3D12Resource*> textures{};
             for (uint32_t i = 0; i < imageCount; i++)
             {
-                TraceLoggingWriteTagged(local,
-                                        "Overlay::CreateSwapchain",
-                                        TLArg(i, "Index"),
-                                        TLPArg(d3dImages[i].texture, "Texture"));
+                //TraceLoggingWriteTagged(local, "Overlay::CreateSwapchain", TLArg(i, "Index"), TLPArg(d3dImages[i].texture, "Texture"));
                 textures.push_back(d3dImages[i].texture);
             }
             m_Swapchains[swapchain] = {swapchain,
@@ -201,15 +196,15 @@ namespace openxr_api_layer::graphics
                                             uint32_t* index)
     {
         std::unique_lock lock(m_DrawMutex);
-        TraceLocalActivity(local);
-        //TraceLoggingWriteStart(local, "Overlay::AcquireSwapchainImage", TLPArg(swapchain, "Swapchain"));
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Overlay::AcquireSwapchainImage", TLXArg(swapchain, "Swapchain"));
         const auto swapchainIt = m_Swapchains.find(swapchain);
         if (swapchainIt != m_Swapchains.end())
         {
             // Perform the release now in case it was delayed.
             if (swapchainIt->second.doRelease)
             {
-                TraceLoggingWriteTagged(local, "Overlay::AcquireSwapchainImage", TLArg(true, "Delayed_Release"));
+                //TraceLoggingWriteTagged(local, "Overlay::AcquireSwapchainImage", TLArg(true, "Delayed_Release"));
 
                 swapchainIt->second.doRelease = false;
                 constexpr XrSwapchainImageReleaseInfo releaseInfo{XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO, nullptr};
@@ -217,7 +212,7 @@ namespace openxr_api_layer::graphics
                     XR_SUCCEEDED(result))
                 {
                     DebugLog("AcquireSwapchainImage: swapchain(%u) released", swapchain);
-                    //TraceLoggingWriteTagged(local,
+                    ////TraceLoggingWriteTagged(local,
                     //                        "Overlay::AcquireSwapchainImage",
                     //                        TLPArg(swapchain, "Swapchain_Released"));
                 }
@@ -238,22 +233,23 @@ namespace openxr_api_layer::graphics
             if (swapchainIt != m_Swapchains.end())
             {
                 DebugLog("AcquireSwapchainImage(%u): index = %u", swapchain, *index);
-                TraceLoggingWriteTagged(local, "Overlay::AcquireSwapchainImage", TLArg(*index, "Acquired_Index"));
+                //TraceLoggingWriteTagged(local, "Overlay::AcquireSwapchainImage", TLArg(*index, "Acquired_Index"));
                 swapchainIt->second.index = *index;
             }
         }
-        //TraceLoggingWriteStop(local,
+        ////TraceLoggingWriteStop(local,
         //                      "Overlay::AcquireSwapchainImage",
         //                      TLArg(*index, "Index"),
         //                      TLArg(xr::ToCString(result), "Result"));
+        //TraceLoggingWriteStop(local, "Overlay::AcquireSwapchainImage", TLArg(*index, "Index"));
         return result;
     }
 
     XrResult Overlay::ReleaseSwapchainImage(XrSwapchain swapchain, const XrSwapchainImageReleaseInfo* releaseInfo)
     {
         std::unique_lock lock(m_DrawMutex);
-        TraceLocalActivity(local);
-        //TraceLoggingWriteStart(local, "Overlay::ReleaseSwapchainImage", TLPArg(swapchain, "Swapchain"));
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Overlay::ReleaseSwapchainImage", TLXArg(swapchain, "Swapchain"));
 
         const auto swapchainIt = m_Swapchains.find(swapchain);
         if (m_OverlayActive && swapchainIt != m_Swapchains.end())
@@ -261,20 +257,20 @@ namespace openxr_api_layer::graphics
             // Perform a delayed release: we still need to copy the texture in DrawOverlay()
             swapchainIt->second.doRelease = true;
             DebugLog("ReleaseSwapchainImage(%u): release postponed", swapchain);
-            TraceLoggingWriteStop(local, "Overlay::ReleaseSwapchainImage", TLArg(true, "Release_Postponed"));
+            //TraceLoggingWriteStop(local, "Overlay::ReleaseSwapchainImage", TLArg(true, "Release_Postponed"));
             return XR_SUCCESS;
         }
         
         const XrResult result = GetInstance()->OpenXrApi::xrReleaseSwapchainImage(swapchain, releaseInfo);
-        //TraceLoggingWriteStop(local, "Overlay::ReleaseSwapchainImage", TLArg(xr::ToCString(result), "Result"));
+        //TraceLoggingWriteStop(local, "Overlay::ReleaseSwapchainImage");
         return result;
     }
 
     void Overlay::ReleaseAllSwapChainImages()
     {
         std::unique_lock lock(m_DrawMutex);
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "Overlay::ReleaseAllSwapChainImages");
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Overlay::ReleaseAllSwapChainImages");
 
         // Release the swapchain images. Some runtimes don't seem to lock cross-frame releasing and this can happen
         // when a frame is discarded.
@@ -282,7 +278,7 @@ namespace openxr_api_layer::graphics
         {
             if (swapchain.second.doRelease)
             {
-                //TraceLoggingWriteTagged(local,
+                ////TraceLoggingWriteTagged(local,
                 //                        "Overlay::ReleaseAllSwapChainImages",
                 //                        TLPArg(swapchain.first, "Swapchain_Release"));
 
@@ -292,7 +288,7 @@ namespace openxr_api_layer::graphics
                     XR_SUCCEEDED(result))
                 {
                     DebugLog("ReleaseAllSwapChainImages: swapchain(%u) released", swapchain.first);
-                    //TraceLoggingWriteTagged(local,
+                    ////TraceLoggingWriteTagged(local,
                     //                        "Overlay::ReleaseAllSwapChainImages",
                     //                        TLPArg(swapchain.first, "Swapchain_Released"));
                 }
@@ -305,26 +301,26 @@ namespace openxr_api_layer::graphics
                 }
             }
         }
-        TraceLoggingWriteStop(local, "Overlay::ReleaseAllSwapChainImages");
+        //TraceLoggingWriteStop(local, "Overlay::ReleaseAllSwapChainImages");
     }
 
     void Overlay::SetMarkerSize()
     {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "Overlay::SetMarkerSize");
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Overlay::SetMarkerSize");
 
         float scaling{0.1f};
         GetConfig()->GetFloat(Cfg::MarkerSize, scaling);
         scaling /= 100.f;
         m_MarkerSize = {scaling, scaling, scaling};
 
-        TraceLoggingWriteStop(local, "Overlay::SetMarkerSize", TLArg(xr::ToString(m_MarkerSize).c_str(), "MarkerSize"));
+        //TraceLoggingWriteStop(local, "Overlay::SetMarkerSize", TLArg(xr::ToString(m_MarkerSize).c_str(), "MarkerSize"));
     }
 
     bool Overlay::ToggleOverlay()
     {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "Overlay::ToggleOverlay");
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Overlay::ToggleOverlay");
 
         if (!m_Initialized)
         {
@@ -332,19 +328,13 @@ namespace openxr_api_layer::graphics
             ErrorLog("%s: graphical overlay is not properly initialized", __FUNCTION__);
             output::AudioOut::Execute(output::Event::Error);
 
-            TraceLoggingWriteStop(local,
-                                  "Overlay::ToggleOverlay",
-                                  TLArg(false, "Success"),
-                                  TLArg(m_OverlayActive, "OverlayACtive"));
+            //TraceLoggingWriteStop(local, "Overlay::ToggleOverlay", TLArg(false, "Success"), TLArg(m_OverlayActive, "OverlayACtive"));
             return false;
         }
         m_OverlayActive = !m_OverlayActive;
         output::AudioOut::Execute(m_OverlayActive ? output::Event::OverlayOn : output::Event::OverlayOff);
 
-        TraceLoggingWriteStop(local,
-                              "Overlay::ToggleOverlay",
-                              TLArg(true, "Success"),
-                              TLArg(m_OverlayActive, "OverlayACtive"));
+        //TraceLoggingWriteStop(local, "Overlay::ToggleOverlay", TLArg(true, "Success"), TLArg(m_OverlayActive, "OverlayACtive"));
         return true;
     }
 
@@ -355,26 +345,26 @@ namespace openxr_api_layer::graphics
                               XrFrameEndInfo* chainFrameEndInfo,
                               OpenXrLayer* openXrLayer)
     {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local,
-                               "Overlay::DrawOverlay",
-                               TLArg(chainFrameEndInfo->displayTime, "Time"),
-                               TLArg(xr::ToString(referencePose).c_str(), "ReferencePose"),
-                               TLArg(xr::ToString(delta).c_str(), "Delta"),
-                               TLArg(mcActivated, "MC_Activated"));
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local,
+                               //"Overlay::DrawOverlay",
+                               //TLArg(chainFrameEndInfo->displayTime, "Time"),
+                               //TLArg(xr::ToString(referencePose).c_str(), "ReferencePose"),
+                               //TLArg(xr::ToString(delta).c_str(), "Delta"),
+                               //TLArg(mcActivated, "MC_Activated"));
        if (!(m_Initialized && m_OverlayActive))
         {
-            TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "CompositionFramework"));
+            //TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "CompositionFramework"));
             return;
         }
-        TraceLoggingWriteTagged(local, "Overlay::DrawOverlay", TLArg(true, "Overlay_Active"));
+        //TraceLoggingWriteTagged(local, "Overlay::DrawOverlay", TLArg(true, "Overlay_Active"));
 
         auto factory = openXrLayer->GetCompositionFactory();
         if (!factory)
         {
             ErrorLog("%s: unable to retrieve composition framework factory", __FUNCTION__);
             m_Initialized = false;
-            TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "CompositionFrameworkFactory"));
+            //TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "CompositionFrameworkFactory"));
             return;
         }
 
@@ -383,7 +373,7 @@ namespace openxr_api_layer::graphics
         {
             ErrorLog("%s: unable to retrieve composition framework", __FUNCTION__);
             m_Initialized = false;
-            TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "CompositionFramework"));
+            //TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "CompositionFramework"));
             return;
         }
 
@@ -400,10 +390,7 @@ namespace openxr_api_layer::graphics
             m_MeshRGB = composition->getCompositionDevice()->createSimpleMesh(vertices, indices, "RGB Mesh");
             vertices = CreateMarker(false);
             m_MeshCMY = composition->getCompositionDevice()->createSimpleMesh(vertices, indices, "CMY Mesh");
-            TraceLoggingWriteTagged(local,
-                                    "Overlay::DrawOverlay",
-                                    TLPArg(m_MeshRGB.get(), "MeshRGB"),
-                                    TLPArg(m_MeshCMY.get(), "MeshCMY"));
+            //TraceLoggingWriteTagged(local, "Overlay::DrawOverlay", TLPArg(m_MeshRGB.get(), "MeshRGB"), TLPArg(m_MeshCMY.get(), "MeshCMY"));
             m_InitializedSessions.insert(session);
             DebugLog("initialized marker meshes");
         }
@@ -422,7 +409,7 @@ namespace openxr_api_layer::graphics
             if (!lastProjectionLayer)
             {
                 ErrorLog("%s: no projection layer found", __FUNCTION__);
-                TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "CompositionFramework"));
+                //TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "CompositionFramework"));
                 return;
             }
 
@@ -435,7 +422,7 @@ namespace openxr_api_layer::graphics
                          chainFrameEndInfo->displayTime,
                          lastProjectionLayer->space);
                 m_Initialized = false;
-                TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "RefToStage"));
+                //TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "RefToStage"));
                 return;
             }
             DebugLog("overlay last projection layer space: %u, pose to stage: %s",
@@ -460,22 +447,22 @@ namespace openxr_api_layer::graphics
                 const XrSwapchain swapchain = view.subImage.swapchain;
                 const XrRect2Di* imageRect = &view.subImage.imageRect;
 
-                TraceLoggingWriteTagged(local,
-                                        "Overlay::DrawOverlay",
-                                        TLArg(eye, "Eye"),
-                                        TLArg(imageRect->extent.width, "Width"),
-                                        TLArg(imageRect->extent.height, "Heigth"),
-                                        TLArg(imageRect->offset.x, "OffsetX"),
-                                        TLArg(imageRect->offset.y, "OffsetY"),
-                                        TLArg(view.subImage.imageArrayIndex, "ArrayIndex"),
-                                        TLArg(xr::ToString(view.pose).c_str(), "Pose"),
-                                        TLArg(xr::ToString(view.fov).c_str(), "Fov"),
-                                        TLPArg(view.next, "Next"));
+                //TraceLoggingWriteTagged(local,
+                                        //"Overlay::DrawOverlay",
+                                        //TLArg(eye, "Eye"),
+                                        //TLArg(imageRect->extent.width, "Width"),
+                                        //TLArg(imageRect->extent.height, "Heigth"),
+                                        //TLArg(imageRect->offset.x, "OffsetX"),
+                                        //TLArg(imageRect->offset.y, "OffsetY"),
+                                        //TLArg(view.subImage.imageArrayIndex, "ArrayIndex"),
+                                        //TLArg(xr::ToString(view.pose).c_str(), "Pose"),
+                                        //TLArg(xr::ToString(view.fov).c_str(), "Fov"),
+                                        //TLPArg(view.next, "Next"));
 
                 if (!InitializeTextures(eye, swapchain, composition))
                 {
                     m_Initialized = false;
-                    TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "AppTexture_Copied"));
+                    //TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "AppTexture_Copied"));
                     return;
                 }
 
@@ -486,7 +473,7 @@ namespace openxr_api_layer::graphics
                 {
                     ErrorLog("%s: unable to copy app texture for swapchain: %u", __FUNCTION__, swapchain);
                     m_Initialized = false;
-                    TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "AppTexure_Copied"));
+                    //TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(false, "AppTexure_Copied"));
                     return;
                 }
 
@@ -502,7 +489,7 @@ namespace openxr_api_layer::graphics
                 {
                     ErrorLog("%s: unable to copy app texture for swapchain: %u", __FUNCTION__, swapchain);
                     m_Initialized = false;
-                    TraceLoggingWriteStop(local, "Overlay::InitializeTextures", TLArg(false, "AppTexure_Copied"));
+                    //TraceLoggingWriteStop(local, "Overlay::InitializeTextures", TLArg(false, "AppTexure_Copied"));
                     return;
                 }
             }
@@ -512,18 +499,18 @@ namespace openxr_api_layer::graphics
             ErrorLog("%s: encountered exception: %s", __FUNCTION__, e.what());
             m_Initialized = false;
         }
-        TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(true, "Success"));
+        //TraceLoggingWriteStop(local, "Overlay::DrawOverlay", TLArg(true, "Success"));
     }
     
     bool Overlay::InitializeTextures(uint32_t eye, XrSwapchain swapchain, const ICompositionFramework* composition)
     {
         TraceLoggingActivity<g_traceProvider> local;
-        TraceLoggingWriteStart(local, "Overlay::InitializeTextures");
+        //TraceLoggingWriteStart(local, "Overlay::InitializeTextures");
 
         if (!m_Swapchains.contains(swapchain))
         {
             ErrorLog("%s: unable to find state for swapchain: %u", __FUNCTION__, swapchain);
-            TraceLoggingWriteStop(local, "Overlay::InitializeTextures", TLArg(false, "SwapchainState_Found"));
+            //TraceLoggingWriteStop(local, "Overlay::InitializeTextures", TLArg(false, "SwapchainState_Found"));
             return false;
         }
 
@@ -554,13 +541,10 @@ namespace openxr_api_layer::graphics
                      eye,
                      createInfo.width,
                      createInfo.height);
-            TraceLoggingWriteTagged(local,
-                                    "Overlay::InitializeTextures",
-                                    TLPArg(colorTexture.get(), "ColorTexture"),
-                                    TLPArg(depthTexture.get(), "DepthTexture"));
+            //TraceLoggingWriteTagged(local, "Overlay::InitializeTextures", TLPArg(colorTexture.get(), "ColorTexture"), TLPArg(depthTexture.get(), "DepthTexture"));
         }
 
-        TraceLoggingWriteStop(local, "Overlay::InitializeTextures", TLArg(true, "Success"));
+        //TraceLoggingWriteStop(local, "Overlay::InitializeTextures", TLArg(true, "Success"));
         return true;
     }
 
@@ -646,8 +630,8 @@ namespace openxr_api_layer::graphics
 
     std::vector<SimpleMeshVertex> Overlay::CreateMarker(bool reference)
     {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "Overlay::CreateMarker", TLArg(reference, "Refernace"));
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "Overlay::CreateMarker", TLArg(reference, "Refernace"));
 
         float tip{1.f}, point65{0.65f}, point6{0.6f}, point1{0.1f}, point05{0.05f}, bottom{0.f};
         if (reference)
@@ -688,7 +672,7 @@ namespace openxr_api_layer::graphics
                                                              reference ? LightGreen : LightYellow);
         vertices.insert(vertices.end(), front.begin(), front.end());
 
-        TraceLoggingWriteStop(local, "Overlay::CreateMarker");
+        //TraceLoggingWriteStop(local, "Overlay::CreateMarker");
 
         return vertices;
     }

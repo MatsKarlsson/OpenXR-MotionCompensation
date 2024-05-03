@@ -135,6 +135,7 @@
     </None>
     <None Include="packages.config" />
     <None Include="XR_APILAYER_NOVENDOR_motion_compensation-32.json" />
+    <None Include="XR_APILAYER_NOVENDOR_motion_compensation.def" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Sounds.rc" />

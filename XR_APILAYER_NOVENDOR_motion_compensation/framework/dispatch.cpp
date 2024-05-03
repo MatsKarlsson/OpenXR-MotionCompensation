@@ -36,8 +36,8 @@ namespace openxr_api_layer {
                                                  const struct XrApiLayerCreateInfo* const apiLayerInfo,
                                                  XrInstance* const instance) {
         DebugLog("--> xrCreateApiLayerInstance");
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "xrCreateApiLayerInstance");
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "xrCreateApiLayerInstance");
 
         if (!apiLayerInfo || apiLayerInfo->structType != XR_LOADER_INTERFACE_STRUCT_API_LAYER_CREATE_INFO ||
             apiLayerInfo->structVersion != XR_API_LAYER_CREATE_INFO_STRUCT_VERSION ||
@@ -55,7 +55,7 @@ namespace openxr_api_layer {
         {
             auto info = apiLayerInfo->nextInfo;
             while (info) {
-                TraceLoggingWriteTagged(local, "xrCreateApiLayerInstance", TLArg(info->layerName, "LayerName"));
+                //TraceLoggingWriteTagged(local, "xrCreateApiLayerInstance", TLArg(info->layerName, "LayerName"));
                 Log(fmt::format("Using layer: {}", info->layerName));
                 info = info->next;
             }
@@ -167,7 +167,7 @@ namespace openxr_api_layer {
         std::vector<const char*> newEnabledExtensionNames;
         for (uint32_t i = 0; i < chainInstanceCreateInfo.enabledExtensionCount; i++) {
             const std::string_view ext(chainInstanceCreateInfo.enabledExtensionNames[i]);
-            TraceLoggingWriteTagged(local, "xrCreateApiLayerInstance", TLArg(ext.data(), "ExtensionName"));
+            //TraceLoggingWriteTagged(local, "xrCreateApiLayerInstance", TLArg(ext.data(), "ExtensionName"));
 
             if (std::find(blockedExtensions.cbegin(), blockedExtensions.cend(), ext) == blockedExtensions.cend()) {
                 Log(fmt::format("Requested extension: {}", ext));
@@ -198,7 +198,7 @@ namespace openxr_api_layer {
             try {
                 result = openxr_api_layer::GetInstance()->xrCreateInstance(instanceCreateInfo);
             } catch (std::exception& exc) {
-                TraceLoggingWriteTagged(local, "xrCreateInstance_Error", TLArg(exc.what(), "Error"));
+                //TraceLoggingWriteTagged(local, "xrCreateInstance_Error", TLArg(exc.what(), "Error"));
                 ErrorLog(fmt::format("xrCreateInstance: {}", exc.what()));
                 result = XR_ERROR_RUNTIME_FAILURE;
             }
@@ -213,7 +213,7 @@ namespace openxr_api_layer {
             }
         }
 
-        TraceLoggingWriteStop(local, "xrCreateApiLayerInstance", TLArg(xr::ToCString(result), "Result"));
+        //TraceLoggingWriteStop(local, "xrCreateApiLayerInstance", TLArg(xr::ToCString(result), "Result"));
         if (XR_FAILED(result)) {
             ErrorLog(fmt::format("xrCreateApiLayerInstance failed with {}", xr::ToCString(result)));
         }
@@ -223,8 +223,8 @@ namespace openxr_api_layer {
 
     // Forward the xrGetInstanceProcAddr() call to the dispatcher.
     XrResult XRAPI_CALL xrGetInstanceProcAddr(XrInstance instance, const char* name, PFN_xrVoidFunction* function) {
-        TraceLocalActivity(local);
-        TraceLoggingWriteStart(local, "xrGetInstanceProcAddr");
+        //TraceLocalActivity(local);
+        //TraceLoggingWriteStart(local, "xrGetInstanceProcAddr");
 
         XrResult result;
         try {
@@ -236,12 +236,12 @@ namespace openxr_api_layer {
                 result = openxr_api_layer::GetInstance()->xrGetInstanceProcAddrInternal(instance, name, function);
             }
         } catch (std::exception& exc) {
-            TraceLoggingWriteTagged(local, "xrGetInstanceProcAddr_Error", TLArg(exc.what(), "Error"));
+            //TraceLoggingWriteTagged(local, "xrGetInstanceProcAddr_Error", TLArg(exc.what(), "Error"));
             ErrorLog(fmt::format("xrGetInstanceProcAddr: {}", exc.what()));
             result = XR_ERROR_RUNTIME_FAILURE;
         }
 
-        TraceLoggingWriteStop(local, "xrGetInstanceProcAddr", TLArg(xr::ToCString(result), "Result"));
+        //TraceLoggingWriteStop(local, "xrGetInstanceProcAddr", TLArg(xr::ToCString(result), "Result"));
 
         return result;
     }
